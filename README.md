@@ -2,6 +2,8 @@
 
 EcoTrack is a personal carbon-footprint awareness app. A user can create a local account, estimate emissions from everyday travel, household electricity, diet, and clothing, explore an interactive reduction scenario, and save monthly check-ins, a reduction goal, and a practical action checklist.
 
+**Live app:** [https://ecotrack-jet.vercel.app](https://ecotrack-jet.vercel.app)
+
 > **Scope:** EcoTrack is an educational prototype, not a carbon-audit service. Emission factors are illustrative constants in the source code, not a bundled regional dataset, a live lookup, or a formally verified inventory.
 
 ## Contents
