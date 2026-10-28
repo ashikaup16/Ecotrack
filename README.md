@@ -13,6 +13,7 @@ EcoTrack is a personal carbon-footprint awareness app. A user can create a local
 - [Requirements](#requirements)
 - [Run in development](#run-in-development)
 - [Production build and run](#production-build-and-run)
+- [Backend deployment status](#backend-deployment-status)
 - [Configuration](#configuration)
 - [Account data and persistence](#account-data-and-persistence)
 - [Footprint calculation](#footprint-calculation)
@@ -54,6 +55,19 @@ Python 3 calculator
 - **API and storage:** Express runs on port `3001` by default. Node's built-in `node:sqlite` module stores accounts, sessions, the latest profile, monthly check-ins, personal goals, and completed actions in SQLite.
 - **Calculator:** The API starts `calculator/footprint.py` as a child process for each estimate, sends JSON on stdin, and parses the JSON result from stdout. Python diagnostics go to stderr.
 - **Production serving:** `npm start` serves `dist/` from Express when a production build exists, as well as the API.
+
+## Backend deployment status
+
+The backend included in this repository is a **Node.js/Express service**, not a hosted API automatically provided by the Vercel frontend deployment:
+
+- `server/index.js` implements authentication, session handling, calculation orchestration, and the `/api/*` routes.
+- Node's built-in SQLite database stores accounts and user data on the server filesystem.
+- The server starts `calculator/footprint.py` as a Python subprocess for each calculation.
+- The local `npm run dev` command starts both the Vite frontend and this API. In development, Vite forwards `/api` requests to `http://localhost:3001`.
+
+The live frontend is [https://ecotrack-jet.vercel.app](https://ecotrack-jet.vercel.app). **The API is not currently deployed at that URL:** a live check of `https://ecotrack-jet.vercel.app/api/health` returned HTTP 404. The repository has no Vercel API-function or rewrite configuration. Consequently, the live page alone does not provide the Express backend, Python calculator, persistent SQLite storage, or working account sign-in/calculation routes. Use `npm run dev` locally to use the complete application.
+
+To make the app fully available online, deploy the Express service to a Node.js host that provides a persistent writable disk and Python 3, set `ECOTRACK_DB_PATH` to persistent storage, configure the Python executable if needed, and deploy the frontend with a same-origin `/api` reverse proxy/rewrite to that service. The browser currently uses relative `/api` URLs and same-origin session cookies; a separately hosted API needs a correctly configured proxy or a deliberate frontend/API CORS and cookie configuration. A static frontend deployment alone is not sufficient. For a single-host deployment, build with `npm run build` and run `npm start` on the same host as Node.js, Python, and the persistent SQLite file.
 
 ## Requirements
 
